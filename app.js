@@ -2,13 +2,15 @@
 const { response } = require('express');
 var express = require('express');
 var app = express();
+var methodOverride = require('method-override');
 
 var bodyParser = require('body-parser');
+
+app.use(methodOverride("_method"));
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 var mysql = require('mysql');
-const { json } = require('body-parser');
 
 var con = mysql.createConnection({
   host: "127.0.0.1",
@@ -32,13 +34,9 @@ app.get("/", (req, res) => {
 });
 
 app.get("/blog", (req, res) => {
-    var output = "";
     con.query("SELECT * FROM posts", function (err, result, fields) {
         if (err) throw err;
-        for(var i = 0; i < result.length; i++){
-            output += result[i].Title + "<br>" + result[i].Body + "<br>" + result[i].Date + "<br><br>";
-        }
-        res.render("blog", {output: output});
+        res.render("blog", {result: result});
     });
 });
 
@@ -50,7 +48,19 @@ app.post("/newblog", urlencodedParser, (req, res) =>{
     var title = req.body.title;
     var body = req.body.text;
     con.query(`INSERT INTO posts (Title, Body, Date) VALUES ("${title}", "${body}", CURDATE())`);
-    res.redirect("blog");
+    res.redirect("/blog");
+});
+
+app.get("/posts/:id", (req, res) => {
+    con.query(`SELECT * FROM posts WHERE ID = ${req.params.id}`, function(err, result, fields){
+        if (err) throw err;
+        res.render("post", {result: result[0]});
+    });
+});
+
+app.delete("/posts/:id", (req, res) => {
+    con.query(`DELETE FROM posts WHERE ID = ${req.params.id}`)
+    res.redirect("/blog")
 });
 
 // Listen
