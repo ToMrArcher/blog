@@ -1,0 +1,32 @@
+* {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.wrapper {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.middle {
+    width: 500px;
+    height: 200px;
+    background-color: gray;
+    display: flex;
+    justify-content: center;
+    flex-flow: column;
+    border-radius: 4px;
+    gap: 15px;
+}
+
+nav {
+    font-size: x-large;
+}
+
+h1 {
+    font-size: xx-large;
+}

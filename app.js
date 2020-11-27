@@ -19,6 +19,8 @@ var con = mysql.createConnection({
   database: "blog"
 });
 
+app.use(express.static('views'));
+
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 
@@ -34,7 +36,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/blog", (req, res) => {
-    con.query("SELECT * FROM posts", function (err, result, fields) {
+    con.query("SELECT * FROM posts ORDER BY id desc", function (err, result, fields) {
         if (err) throw err;
         res.render("blog", {result: result});
     });
